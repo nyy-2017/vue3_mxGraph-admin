@@ -1,7 +1,9 @@
 <template>
-  <div>
-    <!-- 设备树结构组件 -->
-    <device-tree @send_selectID="checked_change" />
+  <div class="status-page">
+    <div class="status-toolbar">
+      <!-- 设备树结构组件 -->
+      <device-tree @send_selectID="checked_change" />
+    </div>
     <div id="graphContainer2"></div>
   </div>
 </template>
@@ -261,14 +263,29 @@ export default {
 </script>
 
 <style scoped>
-#graphContainer2 {
-  width: 100%;
+/* 页面撑满内容区：顶部操作区自适应，画布区占满剩余高度。
+   画布容器不再用固定 min-height / top 偏移，否则会撑破内容区产生多层滚动条 */
+.status-page {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  min-height: 780px !important;
+  min-height: 0;
+  overflow: hidden;
+}
+.status-toolbar {
+  flex: none;
+  padding-bottom: 10px;
+}
+#graphContainer2 {
   position: relative;
-  top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  border: 1px solid var(--app-border, #1e3149);
+  border-radius: var(--app-radius, 8px);
+  /* 含边框计算宽度，避免 1px 边框导致内容区出现横向滚动条 */
+  box-sizing: border-box;
+  overflow: hidden;
 }
 #graphContainer2 .geDiagramContainer.geDiagramBackdrop {
   top: 0 !important;

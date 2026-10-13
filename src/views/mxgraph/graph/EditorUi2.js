@@ -2670,7 +2670,7 @@ EditorUi.prototype.refresh = function (sizeDidChange) {
 
   this.diagramContainer.style.left = (this.hsplit.parentNode != null) ? (effHsplitPosition + this.splitSize) + 'px' : '0px';
   // this.diagramContainer.style.top = this.sidebarContainer.style.top;
-  this.diagramContainer.style.top = '50px';
+  this.diagramContainer.style.top = '0px';
   // this.footerContainer.style.height = this.footerHeight + 'px';
   // this.hsplit.style.top = this.sidebarContainer.style.top;
   // this.hsplit.style.bottom = (this.footerHeight + off) + 'px';

@@ -1,0 +1,128 @@
+/**
+ * 全局深色主题样式
+ * 组件级配色主要由 antd darkAlgorithm + theme.js 的 token 负责，
+ * 这里只补充：设计变量、页面底色、滚动条、以及 antd 用 CSS 类才方便覆盖的部分。
+ */
+:root {
+  /* 页面框架 */
+  --app-bg: #0a1220;
+  --app-bg-sider: linear-gradient(180deg, #0c1a2c 0%, #081320 100%);
+  --app-bg-panel: #0d1a2b;
+  --app-bg-card: #101d2e;
+  --app-bg-elevated: #16263c;
+  --app-bg-hover: rgba(255, 255, 255, 0.06);
+  --app-border: #1e3149;
+  --app-border-soft: #172940;
+
+  /* 文字 */
+  --app-text: #dce7f5;
+  --app-text-sub: #8fa3bd;
+  --app-text-weak: #64758c;
+
+  /* 主色（青绿，用于选中菜单 / 关键操作） */
+  --app-primary: #16c79a;
+  --app-primary-strong: #0fa885;
+  --app-primary-contrast: #04231d;
+  --app-primary-soft: rgba(22, 199, 154, 0.14);
+
+  --app-radius: 8px;
+  --app-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  /* 供 mxgraph 等第三方区域引用 */
+  --border-color: var(--app-border);
+}
+
+html,
+body {
+  background: var(--app-bg);
+}
+
+/* 深色滚动条（仅作用于应用内部，避免影响 mxgraph 自定义滚动容器） */
+body * {
+  scrollbar-width: thin;
+  scrollbar-color: #2a3f57 transparent;
+}
+body *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+body *::-webkit-scrollbar-thumb {
+  background: #2a3f57;
+  border-radius: 4px;
+}
+body *::-webkit-scrollbar-thumb:hover {
+  background: #3a5474;
+}
+body *::-webkit-scrollbar-track,
+body *::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::selection {
+  background: rgba(22, 199, 154, 0.35);
+  color: #fff;
+}
+
+/* 静态 message 不跟随 ConfigProvider 主题，手动深色化 */
+body .ant-message .ant-message-notice-content {
+  background: var(--app-bg-elevated);
+  color: var(--app-text);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow);
+}
+body .ant-message .ant-message-custom-content {
+  color: var(--app-text);
+}
+
+/* 表格：ant-design-vue 4 的组件级 token 会被内部默认值覆盖，这里用类名兜底 */
+body .ant-table-thead > tr > th {
+  background: #152639 !important;
+  color: #a8bed6 !important;
+  border-bottom-color: var(--app-border) !important;
+}
+body .ant-table-thead > tr > th::before {
+  background-color: var(--app-border) !important;
+}
+body .ant-table-tbody > tr > td {
+  border-bottom-color: var(--app-border-soft) !important;
+}
+body .ant-table-tbody > tr.ant-table-row:hover > td {
+  background: #152a3e !important;
+}
+body .ant-table.ant-table-bordered > .ant-table-container {
+  border-inline-start-color: var(--app-border) !important;
+}
+body .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > thead > tr > th,
+body .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > tbody > tr > td {
+  border-inline-end-color: var(--app-border) !important;
+}
+
+/* 顶部栏图标按钮（刷新 / 全屏 / 折叠） */
+.app-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  color: var(--app-text-sub);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.app-icon-btn:hover {
+  color: var(--app-primary);
+  background: var(--app-bg-hover);
+}
+
+/* 卡片 / 模态：统一圆角与描边，避免纯黑纯白突兀 */
+body .ant-card {
+  border-color: var(--app-border);
+  border-radius: var(--app-radius);
+}
+body .ant-modal-content {
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+}

@@ -29,11 +29,18 @@ export const appRouter = [
       { title: '时间范围', name: 'dateRange', path: 'dateRange', component: DateRange },
       { title: '组态列表一', name: 'appView', path: 'appView', component: AppView },
       { title: '组态列表二', name: 'graph_list', path: 'graphList', component: GraphList },
-      { title: '查看状态', name: 'lookStatus', path: 'lookStatus', component: LookStatus },
+      {
+        title: '查看状态',
+        name: 'lookStatus',
+        path: 'lookStatus',
+        component: LookStatus,
+        // 全屏页面：由页面自身撑满内容区，内容区不再产生滚动条
+        meta: { fullHeight: true }
+      },
       {
         title: 'graph详情页',
         name: 'grapheditor',
-        meta: { hidden: true },
+        meta: { hidden: true, fullHeight: true },
         path: 'grapheditor/:id?',
         component: Grapheditor
       }

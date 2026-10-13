@@ -5,7 +5,7 @@
         {{ item.name }}
       </a-select-option>
     </a-select>
-    <span style="line-height: 30px; margin-left: 12px; color: #cf1322">
+    <span style="line-height: 32px; margin-left: 12px; color: #ffa940">
       注：黑色--正常，紫色--故障，红色--离线，灰色--异常
     </span>
   </div>

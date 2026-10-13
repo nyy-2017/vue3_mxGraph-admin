@@ -4,7 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a1220" />
     <title>vue3_mxGraph 组态编辑器</title>
+    <style>
+      /* 首屏底色，避免深色主题下加载时出现白闪 */
+      html,
+      body {
+        margin: 0;
+        background: #0a1220;
+      }
+    </style>
   </head>
   <body>
     <div id="app"></div>

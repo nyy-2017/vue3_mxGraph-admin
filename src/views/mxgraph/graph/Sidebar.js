@@ -3919,7 +3919,13 @@ Sidebar.prototype.addStencilPalette = function (id, title, stencilFile, style, i
       }
     }
 
-    mxStencilRegistry.loadStencilSet(stencilFile, mxUtils.bind(this, function (packageName, stencilName, displayName, w, h) {
+    // stencil XML 是异步加载的；如果面板在加载完成前已被展开（addFoldingHandler
+    // 只在首次点击时初始化内容），加载完成后需要把条目直接补进已展开的内容区，
+    // 否则面板会永久空白
+    var contentDiv = null;
+    var initialized = false;
+
+    var addStencilFn = mxUtils.bind(this, function (packageName, stencilName, displayName, w, h) {
       if (ignore == null || mxUtils.indexOf(ignore, stencilName) < 0) {
         var tmp = this.getTagsForStencil(packageName, stencilName);
         var tmpTags = (tags != null) ? tags[stencilName] : null;
@@ -3928,13 +3934,29 @@ Sidebar.prototype.addStencilPalette = function (id, title, stencilFile, style, i
           tmp.push(tmpTags);
         }
 
-				fns.push(this.createVertexTemplateEntry('shape=' + packageName + stencilName.toLowerCase() + style,
-					Math.round(w * scale), Math.round(h * scale), '', stencilName.replace(/_/g, ' '), null, null,
-					this.filterTags(tmp.join(' '))));
-			}
-		}), true, true);
+        var fn = this.createVertexTemplateEntry('shape=' + packageName + stencilName.toLowerCase() + style,
+          Math.round(w * scale), Math.round(h * scale), '', stencilName.replace(/_/g, ' '), null, null,
+          this.filterTags(tmp.join(' ')));
 
-    this.addPaletteFunctions(id, title, false, fns);
+        if (initialized && contentDiv != null) {
+          // 面板已展开过：立即追加
+          contentDiv.appendChild(fn(contentDiv));
+        } else {
+          fns.push(fn);
+        }
+      }
+    });
+
+    mxStencilRegistry.loadStencilSet(stencilFile, addStencilFn, true, true);
+
+    this.addPalette(id, title, false, mxUtils.bind(this, function (content) {
+      initialized = true;
+      contentDiv = content;
+
+      for (var i = 0; i < fns.length; i++) {
+        content.appendChild(fns[i](content));
+      }
+    }));
   } else {
     this.addPalette(id, title, false, mxUtils.bind(this, function (content) {
       if (style == null) {

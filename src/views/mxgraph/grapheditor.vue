@@ -188,13 +188,14 @@ export default {
    EditorUi 会把菜单栏/工具栏/形状面板/画布等 absolute 定位的面板全部塞进
    #graphContainer，并按其 clientWidth/clientHeight 计算各面板尺寸。
    原先 .geEditor / #graphContainer 没有高度（在布局内容区里塌陷为 0），
-   导致画布空白、面板错位。这里给容器显式撑满内容区可用高度。
-   高度偏移 = 头部48 + 页签栏约44 + 内容区上下margin 24 + padding 32 */
+   导致画布空白、面板错位。
+   这里用 100% 撑满内容区可用高度（该路由 meta.fullHeight = true，
+   内容区不滚动），不再写死 calc(100vh - 152px)，避免头部/页签高度变化
+   时算不准而产生滚动条 */
 .geEditor {
   position: relative;
   width: 100%;
-  height: calc(100vh - 152px);
-  min-height: 480px;
+  height: 100%;
   overflow: hidden;
 }
 

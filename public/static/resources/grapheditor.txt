@@ -166,6 +166,7 @@ fitPage=整页显示
 fitPageWidth=适应页面宽度
 fitTwoPages=双页
 fitWindow=适应视窗大小
+flowchart=流程图
 flip=翻转
 flipH=水平翻转
 flipV=垂直翻转

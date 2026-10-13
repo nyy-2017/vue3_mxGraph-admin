@@ -24,6 +24,7 @@
       :columns="columns"
       :data-source="topoData"
       :pagination="pagination"
+      size="small"
       row-key="id"
       bordered
       @change="handleTableChange"
@@ -157,5 +158,15 @@ export default {
 <style scoped>
 .topoList {
   padding: 8px;
+}
+/* 压缩表格行高：表头/单元格内边距收紧，让每行更矮 */
+.topoList :deep(.ant-table-thead > tr > th) {
+  padding: 8px 10px;
+}
+.topoList :deep(.ant-table-tbody > tr > td) {
+  padding: 6px 10px;
+}
+.topoList :deep(.ant-table-tbody > tr) {
+  height: 34px;
 }
 </style>
