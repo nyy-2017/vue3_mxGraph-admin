@@ -19,6 +19,10 @@
 <script>
 import addDeviceDialog from './addDeviceDialog.vue'
 import addTypeDialog from './addTypeDialog.vue'
+// 编辑器面板样式必须全局导入：不能放在 <style scoped> 里用 @import，
+// scoped 会给选择器附加 data-v 属性，而 mxgraph 动态创建的面板 DOM
+// 没有 data-v 属性，导致 .geMenubarContainer 等样式全部失效、面板堆叠错乱
+import './styles/grapheditor.css'
 import './graph/Init'
 import mxgraph from './graph/index'
 import Toolbar from './graph/Toolbar'
@@ -75,6 +79,9 @@ export default {
   },
   methods: {
     init() {
+      // 防止重复初始化：再次 init 前清掉上一次 EditorUi 挂进容器的面板 DOM
+      const container = document.getElementById('graphContainer')
+      if (container) container.innerHTML = ''
       const self = this
       const editorUiInit = EditorUi.prototype.init
       EditorUi.prototype.init = function () {
@@ -123,10 +130,11 @@ export default {
       this.bridge.$emit('transfer_type', data, deviceLayoutData)
     },
     loadDetail() {
-      if (this.$route.params.hasOwnProperty('id')) {
-        this.id = this.$route.params.id
-        graphApi.detail(this.id).then((res) => {
-          const data = res.data.data
+      const id = this.$route.params.id
+      if (id) {
+        this.id = id
+        graphApi.detail(id).then((res) => {
+          const data = (res.data && res.data.data) || {}
           this.name = data.name
           this.xml = data.xml
           this.init()
@@ -137,9 +145,12 @@ export default {
     }
   },
   watch: {
-    $route() {
-      // 绑定 xml 跳转时重新加载
-      this.loadDetail()
+    $route(to) {
+      // 仅当仍停留在编辑器路由时才重新加载，避免离开页面时误触发 init
+      if (to.name === 'grapheditor') {
+        // 绑定 xml 跳转时重新加载
+        this.loadDetail()
+      }
     }
   },
   mounted() {
@@ -173,5 +184,23 @@ export default {
 </script>
 
 <style scoped>
-@import './styles/grapheditor.css';
+/* 编辑器布局修复：
+   EditorUi 会把菜单栏/工具栏/形状面板/画布等 absolute 定位的面板全部塞进
+   #graphContainer，并按其 clientWidth/clientHeight 计算各面板尺寸。
+   原先 .geEditor / #graphContainer 没有高度（在布局内容区里塌陷为 0），
+   导致画布空白、面板错位。这里给容器显式撑满内容区可用高度。
+   高度偏移 = 头部48 + 页签栏约44 + 内容区上下margin 24 + padding 32 */
+.geEditor {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 152px);
+  min-height: 480px;
+  overflow: hidden;
+}
+
+#graphContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 </style>

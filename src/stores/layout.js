@@ -49,7 +49,10 @@ export const useLayoutStore = defineStore('layout', {
     openTab(name) {
       const existed = this.openedTabs.some((t) => t.name === name)
       if (!existed) {
-        const tab = this.menuList
+        // 用原始 appRouter 查找（而非过滤后的 menuList），
+        // 这样 meta.hidden 的页面（如 graph详情页）也能打开 tab；
+        // hidden 只影响侧边栏菜单是否展示
+        const tab = appRouter
           .flatMap((m) => (m.children ? m.children : [m]))
           .find((t) => t.name === name)
         if (tab) this.openedTabs.push(tab)

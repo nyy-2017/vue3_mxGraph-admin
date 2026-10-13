@@ -31,10 +31,10 @@ export const appRouter = [
       { title: '组态列表二', name: 'graph_list', path: 'graphList', component: GraphList },
       { title: '查看状态', name: 'lookStatus', path: 'lookStatus', component: LookStatus },
       {
-        title: '编辑组态',
+        title: 'graph详情页',
         name: 'grapheditor',
         meta: { hidden: true },
-        path: 'grapheditor/:id',
+        path: 'grapheditor/:id?',
         component: Grapheditor
       }
     ]

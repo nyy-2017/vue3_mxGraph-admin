@@ -8,6 +8,9 @@
 
 <script>
 import deviceTree from './statusModal/deviceTree.vue'
+// grapheditor.css 必须全局导入：scoped 里的 @import 会被附加 data-v 属性，
+// 与 mxgraph 动态创建的面板 DOM 不匹配，导致编辑器样式全部失效
+import './styles/grapheditor.css'
 import './graph/Init'
 import mxgraph from './graph/index'
 import Toolbar from './graph/Toolbar'
@@ -257,9 +260,6 @@ export default {
 }
 </script>
 
-<style scoped>
-@import './styles/grapheditor.css';
-</style>
 <style scoped>
 #graphContainer2 {
   width: 100%;
