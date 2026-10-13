@@ -93,7 +93,10 @@ export default {
       const name = this.save_DiagramIdName
       if (name) {
         graphApi.list().then((res) => {
-          const last_Max = res.data.data.length
+          const list = Array.isArray(res.data)
+            ? res.data
+            : (res.data && res.data.data) || []
+          const last_Max = list.length
           const _one = '00'
           let _last = last_Max + 1
           this.diagramid = deviceTopoCode(_one, _last.toString())
@@ -122,8 +125,12 @@ export default {
     reportTopo() {},
     get_list() {
       graphApi.list().then((response) => {
-        this.topoData = response.data.data
-        this.pagination.total = response.data.data.length
+        // 兼容后端不同的返回结构：可能是 {data:[...]} 或直接是数组
+        const list = Array.isArray(response.data)
+          ? response.data
+          : (response.data && response.data.data) || []
+        this.topoData = list
+        this.pagination.total = list.length
       })
     },
     onEdit(id, name) {

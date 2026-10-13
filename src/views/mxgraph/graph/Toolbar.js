@@ -58,8 +58,16 @@ Toolbar.prototype.dropdownImage = (!mxClient.IS_SVG) ? IMAGE_PATH + '/dropdown.g
 /**
  * Image element for the dropdown arrow.
  */
-Toolbar.prototype.dropdownImageHtml = '<img border="0" style="position:absolute;right:4px;top:' +
-  ((!EditorUi.compactUi) ? 8 : 6) + 'px;" src="' + Toolbar.prototype.dropdownImage + '" valign="middle"/>';
+// 改为惰性 getter：EditorUi 与 Toolbar 存在循环依赖，在 ESM 下若在此处（模块顶层）
+// 直接读取 EditorUi.compactUi 会触发 TDZ（Cannot access 'EditorUi' before initialization）。
+// 用 getter 把访问推迟到运行时，届时 EditorUi 已初始化完成。
+Object.defineProperty(Toolbar.prototype, 'dropdownImageHtml', {
+  configurable: true,
+  get: function () {
+    return '<img border="0" style="position:absolute;right:4px;top:' +
+      ((!EditorUi.compactUi) ? 8 : 6) + 'px;" src="' + Toolbar.prototype.dropdownImage + '" valign="middle"/>';
+  }
+});
 
 /**
  * Defines the background for selected buttons.
