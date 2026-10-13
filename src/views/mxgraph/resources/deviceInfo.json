@@ -1,0 +1,57 @@
+[
+    {
+        "deviceId":"06600637199010126",
+        "deviceName": "设备_26",
+        "deviceType": "1"
+    },
+    {
+        "deviceId":"06600637199010127",
+        "deviceName":"设备_27",
+        "deviceType": "2"
+    },
+    {
+        "deviceId":"06600637199010128",
+        "deviceName": "设备_28",
+        "deviceType": "1"
+    },
+    {
+        "deviceId":"06600637199010129",
+        "deviceName": "设备_29",
+        "deviceType": "1"
+    },
+    {
+        "deviceId":"06010637199010131",
+        "deviceName":"设备_31",
+        "deviceType": "3"
+    },
+    {
+        "deviceId":"06060637199010136",
+        "deviceName":"200_6",
+        "deviceType": "4"
+    },
+    {
+        "deviceId":"06070637199010137",
+        "deviceName":"200_7",
+        "deviceType": "5"
+    },
+    {
+        "deviceId":"06050637199010135",
+        "deviceName":"200_5",
+        "deviceType": "6"
+    },
+    {
+        "deviceId":"06040637199010134",
+        "deviceName":"设备_34",
+        "deviceType": "7"
+    },
+    {
+        "deviceId":"06020637199010132",
+        "deviceName":"设备_32",
+        "deviceType": "1"
+    },
+    {
+        "deviceId":"0601ZZZZ199010141",
+        "deviceName":"设备_41",
+        "deviceType": "1"
+    }
+]
