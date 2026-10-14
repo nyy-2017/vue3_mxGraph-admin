@@ -17,6 +17,7 @@
 <script setup>
 import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { message } from 'ant-design-vue'
 import { useLayoutStore } from '../../stores/layout'
 
 const route = useRoute()
@@ -34,6 +35,11 @@ function onChange(name) {
 }
 function onEdit(targetKey, action) {
   if (action === 'remove') {
+    // 保留最后一个页签，不允许删除
+    if (layoutStore.openedTabList.length <= 1) {
+      message.warning('至少保留一个页签')
+      return
+    }
     layoutStore.removeTab(targetKey)
     if (route.name === targetKey) {
       const rest = layoutStore.openedTabList
@@ -57,7 +63,7 @@ watch(
   flex: none;
   background: var(--app-bg-panel);
   border-bottom: 1px solid var(--app-border);
-  padding: 6px 12px 0;
+  padding: 5px 12px 0;
 }
 .tabs :deep(.ant-tabs-nav) {
   margin: 0;
@@ -66,26 +72,27 @@ watch(
   border-bottom: none;
 }
 .tabs :deep(.ant-tabs-tab) {
-  padding: 5px 14px !important;
+  padding: 2px 10px !important;
+  font-size: 12px;
   color: var(--app-text-sub);
   background: transparent;
   border: 1px solid var(--app-border) !important;
-  border-radius: 8px 8px 0 0 !important;
+  border-radius: 6px 6px 0 0 !important;
   transition: all 0.2s;
 }
 .tabs :deep(.ant-tabs-tab + .ant-tabs-tab) {
-  margin-left: 6px;
+  margin-left: 5px;
 }
 .tabs :deep(.ant-tabs-tab:hover) {
   color: var(--app-primary);
   border-color: var(--app-primary) !important;
 }
 .tabs :deep(.ant-tabs-tab-active) {
-  background: var(--app-primary) !important;
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.18) 0%, rgba(56, 189, 248, 0.05) 100%) !important;
   border-color: var(--app-primary) !important;
 }
 .tabs :deep(.ant-tabs-tab-active .ant-tabs-tab-btn) {
-  color: var(--app-primary-contrast) !important;
+  color: #fff !important;
   font-weight: 600;
 }
 .tabs :deep(.ant-tabs-tab .ant-tabs-tab-remove) {

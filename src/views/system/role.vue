@@ -125,7 +125,7 @@ async function loadData() {
   loading.value = true
   try {
     const res = await systemApi.role.list()
-    list.value = res.data
+    list.value = res.data.data
   } finally {
     loading.value = false
   }
@@ -171,8 +171,8 @@ async function onDelete(record) {
 async function openMenus(record) {
   currentRole.value = record
   const [tree, ids] = await Promise.all([systemApi.menu.tree(), systemApi.role.menus(record.id)])
-  menuTree.value = toTree(tree.data)
-  checkedKeys.value = ids.data
+  menuTree.value = toTree(tree.data.data)
+  checkedKeys.value = ids.data.data
   menuVisible.value = true
 }
 function onCheck(checked, info) {

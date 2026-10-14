@@ -19,11 +19,11 @@
   --app-text-sub: #8fa3bd;
   --app-text-weak: #64758c;
 
-  /* 主色（青绿，用于选中菜单 / 关键操作） */
-  --app-primary: #16c79a;
-  --app-primary-strong: #0fa885;
-  --app-primary-contrast: #04231d;
-  --app-primary-soft: rgba(22, 199, 154, 0.14);
+  /* 主色（亮青，用于选中菜单 / 关键操作） */
+  --app-primary: #38bdf8;
+  --app-primary-strong: #0ea5e9;
+  --app-primary-contrast: #071827;
+  --app-primary-soft: rgba(56, 189, 248, 0.14);
 
   --app-radius: 8px;
   --app-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -59,7 +59,7 @@ body *::-webkit-scrollbar-corner {
 }
 
 ::selection {
-  background: rgba(22, 199, 154, 0.35);
+  background: rgba(56, 189, 248, 0.35);
   color: #fff;
 }
 
@@ -95,6 +95,17 @@ body .ant-table.ant-table-bordered > .ant-table-container {
 body .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > thead > tr > th,
 body .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > tbody > tr > td {
   border-inline-end-color: var(--app-border) !important;
+}
+
+/* 搜索输入框：后缀图标垂直居中，避免放大镜错位 */
+body .ant-input-search .ant-input-suffix {
+  display: inline-flex;
+  align-items: center;
+}
+body .ant-input-search .anticon-search {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
 }
 
 /* 顶部栏图标按钮（刷新 / 全屏 / 折叠） */

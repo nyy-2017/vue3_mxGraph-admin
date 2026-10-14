@@ -88,7 +88,7 @@ function onClick({ key }) {
 </script>
 
 <style scoped>
-/* 深色菜单：选中项用青绿实心块，与整体深色底形成对比 */
+/* 深蓝菜单：选中项用深蓝块 + 青色高亮，文字更清晰 */
 :deep(.ant-menu) {
   background: transparent;
   border-inline-end: none;
@@ -96,6 +96,7 @@ function onClick({ key }) {
 }
 :deep(.ant-menu-item),
 :deep(.ant-menu-submenu-title) {
+  position: relative;
   height: 42px;
   line-height: 42px;
   margin: 2px 10px;
@@ -112,28 +113,47 @@ function onClick({ key }) {
 /* 未选中项 hover */
 :deep(.ant-menu-dark .ant-menu-item:not(.ant-menu-item-selected):hover),
 :deep(.ant-menu-dark .ant-menu-submenu-title:hover) {
-  background: var(--app-bg-hover);
+  background: rgba(56, 189, 248, 0.1);
   color: #fff;
 }
-/* 选中项 */
-:deep(.ant-menu-dark .ant-menu-item-selected),
-:deep(.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title) {
+/* 选中项：深蓝背景 + 左侧青色竖线 + 白色文字 */
+:deep(.ant-menu-dark .ant-menu-item-selected) {
   font-weight: 600;
-  color: var(--app-primary-contrast);
+  color: #fff;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.22) 0%, rgba(56, 189, 248, 0.06) 100%);
+}
+:deep(.ant-menu-dark .ant-menu-item-selected::before) {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 2px;
   background: var(--app-primary);
 }
 :deep(.ant-menu-dark .ant-menu-item-selected:hover) {
-  color: var(--app-primary-contrast);
-  background: var(--app-primary-strong);
+  color: #fff;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.28) 0%, rgba(56, 189, 248, 0.1) 100%);
 }
-/* 展开的子菜单去掉默认底色，避免出现色块断层 */
+/* 展开的父级菜单高亮为青色 */
+:deep(.ant-menu-dark .ant-menu-submenu-selected > .ant-menu-submenu-title) {
+  font-weight: 600;
+  color: var(--app-primary);
+  background: rgba(56, 189, 248, 0.08);
+}
+/* 展开的子菜单去掉默认底色 */
 :deep(.ant-menu-dark .ant-menu-sub.ant-menu-inline) {
   background: transparent;
 }
-/* 折叠态：留白收紧，图标居中 */
+/* 折叠态 */
 :deep(.ant-menu-inline-collapsed .ant-menu-item),
 :deep(.ant-menu-inline-collapsed .ant-menu-submenu-title) {
   margin: 2px 6px;
   width: calc(100% - 12px);
+}
+:deep(.ant-menu-inline-collapsed .ant-menu-item-selected::before) {
+  top: 6px;
+  bottom: 6px;
 }
 </style>

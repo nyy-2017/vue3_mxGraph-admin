@@ -132,15 +132,15 @@ async function loadData() {
       size: pagination.pageSize,
       keyword: keyword.value
     })
-    list.value = res.data
-    pagination.total = res.total
+    list.value = res.data.data
+    pagination.total = res.data.total
   } finally {
     loading.value = false
   }
 }
 async function loadRoles() {
   const res = await systemApi.role.list()
-  roles.value = res.data
+  roles.value = res.data.data
 }
 
 function openCreate() {

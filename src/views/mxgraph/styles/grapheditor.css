@@ -1,6 +1,7 @@
 
-/* 全局input 高亮样式 */
-input:focus{
+/* 仅作用于编辑器内部，避免全局污染（如 ant-tabs 的关闭按钮 <button>） */
+.geEditor input:focus,
+.geEditor button:focus{
     outline: none;
 	border: 1px solid rgb(87,163,243);	
 }
@@ -8,7 +9,7 @@ input:focus{
 	outline: none;
 	border: 1px solid rgb(87,163,243);	
 } */
-button {
+.geEditor button {
     display: block;
     border: 1px solid #aaa;
     line-height: normal;

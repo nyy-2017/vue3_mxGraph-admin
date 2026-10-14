@@ -81,7 +81,7 @@ import {
   ReloadOutlined,
   UserOutlined
 } from '@ant-design/icons-vue'
-import { message } from 'ant-design-vue'
+import { message, Modal } from 'ant-design-vue'
 import { useUserStore } from '../../stores/user'
 import authApi from '../../api/auth.api'
 
@@ -110,8 +110,16 @@ function syncFullscreen() {
 }
 
 function logout() {
-  userStore.logout()
-  router.push('/login')
+  Modal.confirm({
+    title: '退出登录',
+    content: '确定要退出登录吗？',
+    okText: '确定',
+    cancelText: '取消',
+    onOk() {
+      userStore.logout()
+      router.push('/login')
+    }
+  })
 }
 
 // 修改密码

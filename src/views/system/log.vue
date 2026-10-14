@@ -76,8 +76,8 @@ async function loadData() {
       username: username.value,
       action: action.value
     })
-    list.value = res.data
-    pagination.total = res.total
+    list.value = res.data.data
+    pagination.total = res.data.total
   } finally {
     loading.value = false
   }

@@ -9,9 +9,9 @@ import { theme } from 'ant-design-vue'
 export const antdTheme = {
   algorithm: theme.darkAlgorithm,
   token: {
-    colorPrimary: '#16c79a',
-    colorInfo: '#16c79a',
-    colorLink: '#16c79a',
+    colorPrimary: '#38bdf8',
+    colorInfo: '#38bdf8',
+    colorLink: '#38bdf8',
     colorSuccess: '#16c79a',
     colorWarning: '#f5a524',
     colorBgBase: '#0a1220',

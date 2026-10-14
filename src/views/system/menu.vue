@@ -153,7 +153,7 @@ async function loadData() {
   loading.value = true
   try {
     const res = await systemApi.menu.tree()
-    list.value = toTableTree(res.data)
+    list.value = toTableTree(res.data.data)
   } finally {
     loading.value = false
   }
