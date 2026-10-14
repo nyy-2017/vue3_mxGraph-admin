@@ -18,7 +18,7 @@
           name="userName"
           :rules="[{ required: true, message: '请填写用户名' }]"
         >
-          <a-input v-model:value="loginForm.userName" size="large" placeholder="用户名">
+          <a-input v-model:value="loginForm.userName" size="large" placeholder="用户名" :disabled="loading">
             <template #prefix><user-outlined /></template>
           </a-input>
         </a-form-item>
@@ -34,14 +34,23 @@
             v-model:value="loginForm.password"
             size="large"
             placeholder="密码"
+            :disabled="loading"
+            @press-enter="handleSubmit"
           />
         </a-form-item>
         <a-form-item class="row-between">
           <a-checkbox v-model:checked="loginForm.rememberMe">记住我</a-checkbox>
         </a-form-item>
         <a-form-item>
-          <a-button type="primary" size="large" html-type="submit" block>登 录</a-button>
+          <a-button
+            type="primary"
+            size="large"
+            html-type="submit"
+            block
+            :loading="loading"
+          >登 录</a-button>
         </a-form-item>
+        <div class="hint">默认超级管理员账号：admin / admin</div>
       </a-form>
     </a-card>
 
@@ -50,28 +59,48 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import { UserOutlined } from '@ant-design/icons-vue'
 import { useUserStore } from '../stores/user'
-import { nowTime } from '../libs/time.js'
+import { useLayoutStore } from '../stores/layout'
+import authApi from '../api/auth.api'
 
 const router = useRouter()
 const userStore = useUserStore()
 
 const loginForm = reactive({
-  password: '111111',
-  rememberMe: false,
-  userId: '0711000001',
-  userName: 'admin',
-  loginTime: nowTime()
+  password: 'admin',
+  rememberMe: true,
+  userName: 'admin'
 })
+const loading = ref(false)
 
-function handleSubmit() {
-  userStore.setUser(loginForm)
-  message.success('登录成功')
-  router.push({ name: 'home' })
+async function handleSubmit() {
+  loading.value = true
+  try {
+    const res = await authApi.login({
+      username: loginForm.userName.trim(),
+      password: loginForm.password
+    })
+    // http 返回完整 axios 响应，需取 res.data
+    userStore.setAuth(res.data)
+    // 登录成功后，主动请求当前用户对应的菜单权限和拥有的所有菜单信息
+    try {
+      const profile = await authApi.me()
+      userStore.setProfile(profile.data)
+      useLayoutStore().setMenus(profile.data.menus || [])
+    } catch (e) {
+      // 拉取失败不阻断登录，路由守卫会兜底重试
+    }
+    message.success('登录成功')
+    router.push({ name: 'home' })
+  } catch (e) {
+    // 错误消息由 http 拦截器统一处理，这里无需重复提示
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -151,6 +180,12 @@ function handleSubmit() {
   letter-spacing: 0.6px;
   text-transform: uppercase;
   color: var(--app-text-weak);
+}
+.hint {
+  margin: -6px 0 18px;
+  font-size: 12px;
+  color: var(--app-text-weak);
+  text-align: center;
 }
 .copyright {
   position: absolute;

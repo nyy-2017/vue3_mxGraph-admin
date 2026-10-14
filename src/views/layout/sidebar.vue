@@ -8,14 +8,14 @@
   >
     <template v-for="item in menuList" :key="item.name">
       <a-menu-item v-if="!item.children" :key="item.name">
-        <template #icon><component :is="iconOf(item.name)" /></template>
+        <template #icon><component :is="iconOf(item)" /></template>
         <span>{{ item.title }}</span>
       </a-menu-item>
       <a-sub-menu v-else :key="item.name">
-        <template #icon><component :is="iconOf(item.name)" /></template>
+        <template #icon><component :is="iconOf(item)" /></template>
         <template #title>{{ item.title }}</template>
         <a-menu-item v-for="child in item.children" :key="child.name">
-          <template #icon><component :is="iconOf(child.name)" /></template>
+          <template #icon><component :is="iconOf(child)" /></template>
           <span>{{ child.title }}</span>
         </a-menu-item>
       </a-sub-menu>
@@ -34,6 +34,11 @@ import {
   ApartmentOutlined,
   UnorderedListOutlined,
   EyeOutlined,
+  SettingOutlined,
+  UserOutlined,
+  TeamOutlined,
+  MenuOutlined,
+  FileSearchOutlined,
   FolderOutlined
 } from '@ant-design/icons-vue'
 import { useLayoutStore } from '../../stores/layout'
@@ -45,18 +50,23 @@ const layoutStore = useLayoutStore()
 const menuList = computed(() => layoutStore.sidebarMenuList)
 const selectedKeys = computed(() => [route.name])
 
-// 菜单图标按路由 name 匹配，未匹配到的用默认图标
+// 菜单图标按后端返回的 icon 字段（图标组件名）匹配
 const ICONS = {
-  home: HomeOutlined,
-  Graphs: AppstoreOutlined,
-  dateTime: ClockCircleOutlined,
-  dateRange: FieldTimeOutlined,
-  appView: ApartmentOutlined,
-  graph_list: UnorderedListOutlined,
-  lookStatus: EyeOutlined
+  HomeOutlined,
+  AppstoreOutlined,
+  ClockCircleOutlined,
+  FieldTimeOutlined,
+  ApartmentOutlined,
+  UnorderedListOutlined,
+  EyeOutlined,
+  SettingOutlined,
+  UserOutlined,
+  TeamOutlined,
+  MenuOutlined,
+  FileSearchOutlined
 }
-function iconOf(name) {
-  return ICONS[name] || FolderOutlined
+function iconOf(item) {
+  return (item.icon && ICONS[item.icon]) || FolderOutlined
 }
 
 // 支持手动展开/收起，同时自动展开当前页面所属的父级菜单

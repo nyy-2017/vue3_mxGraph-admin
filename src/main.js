@@ -6,7 +6,6 @@ import './styles/theme.css'
 
 import App from './App.vue'
 import router from './router'
-import { useLayoutStore } from './stores/layout'
 
 // mxgraph 的 build.js 在非严格（sloppy）脚本上下文下会隐式创建一批全局配置变量
 // （mxLoadResources / mxLoadStylesheets / mxForceIncludes / mxResourceExtension）。
@@ -23,9 +22,5 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(Antd)
-
-// 初始化布局菜单 / 标签页状态
-const layoutStore = useLayoutStore()
-layoutStore.initLayout()
 
 app.mount('#app')

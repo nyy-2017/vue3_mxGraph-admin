@@ -15,10 +15,15 @@
       <span class="user">
         <span class="avatar"><UserOutlined /></span>
         <span class="user-name">{{ loginUser }}</span>
+        <span v-if="roleName" class="role-tag">{{ roleName }}</span>
         <DownOutlined class="caret" />
       </span>
       <template #overlay>
         <a-menu>
+          <a-menu-item key="pwd" @click="openChangePwd">
+            <LockOutlined />
+            <span>修改密码</span>
+          </a-menu-item>
           <a-menu-item key="logout" @click="logout">
             <LogoutOutlined />
             <span>退出登录</span>
@@ -26,26 +31,65 @@
         </a-menu>
       </template>
     </a-dropdown>
+
+    <a-modal
+      v-model:open="pwdVisible"
+      title="修改密码"
+      :confirm-loading="pwdLoading"
+      @ok="submitPwd"
+      @cancel="resetPwdForm"
+      :mask-closable="false"
+    >
+      <a-form :model="pwdForm" layout="vertical" ref="pwdFormRef">
+        <a-form-item label="原密码" name="oldPassword" :rules="[{ required: true, message: '请输入原密码' }]">
+          <a-input-password v-model:value="pwdForm.oldPassword" placeholder="请输入原密码" />
+        </a-form-item>
+        <a-form-item
+          label="新密码"
+          name="newPassword"
+          :rules="[
+            { required: true, message: '请输入新密码' },
+            { min: 6, message: '新密码至少 6 位' }
+          ]"
+        >
+          <a-input-password v-model:value="pwdForm.newPassword" placeholder="至少 6 位" />
+        </a-form-item>
+        <a-form-item
+          label="确认新密码"
+          name="confirm"
+          :rules="[
+            { required: true, message: '请再次输入新密码' },
+            { validator: validateConfirm }
+          ]"
+        >
+          <a-input-password v-model:value="pwdForm.confirm" placeholder="请再次输入新密码" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, reactive, ref, onBeforeUnmount, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import {
   DownOutlined,
   FullscreenExitOutlined,
   FullscreenOutlined,
+  LockOutlined,
   LogoutOutlined,
   ReloadOutlined,
   UserOutlined
 } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 import { useUserStore } from '../../stores/user'
+import authApi from '../../api/auth.api'
 
 const router = useRouter()
 const userStore = useUserStore()
 
-const loginUser = computed(() => userStore.userName || 'admin')
+const loginUser = computed(() => userStore.nickname || userStore.userName || 'admin')
+const roleName = computed(() => userStore.roleName || '')
 
 const isFullscreen = ref(false)
 
@@ -68,6 +112,50 @@ function syncFullscreen() {
 function logout() {
   userStore.logout()
   router.push('/login')
+}
+
+// 修改密码
+const pwdVisible = ref(false)
+const pwdLoading = ref(false)
+const pwdFormRef = ref()
+const pwdForm = reactive({ oldPassword: '', newPassword: '', confirm: '' })
+
+function openChangePwd() {
+  resetPwdForm()
+  pwdVisible.value = true
+}
+function resetPwdForm() {
+  pwdForm.oldPassword = ''
+  pwdForm.newPassword = ''
+  pwdForm.confirm = ''
+  pwdFormRef.value && pwdFormRef.value.clearValidate && pwdFormRef.value.clearValidate()
+}
+function validateConfirm(_rule, value) {
+  if (!value) return Promise.reject('请再次输入新密码')
+  if (value !== pwdForm.newPassword) return Promise.reject('两次输入的密码不一致')
+  return Promise.resolve()
+}
+async function submitPwd() {
+  try {
+    await pwdFormRef.value.validate()
+  } catch (e) {
+    return
+  }
+  pwdLoading.value = true
+  try {
+    await authApi.changePassword({
+      oldPassword: pwdForm.oldPassword,
+      newPassword: pwdForm.newPassword
+    })
+    message.success('密码修改成功，请重新登录')
+    pwdVisible.value = false
+    userStore.logout()
+    router.push('/login')
+  } catch (e) {
+    // 错误由拦截器统一提示
+  } finally {
+    pwdLoading.value = false
+  }
 }
 
 onMounted(() => document.addEventListener('fullscreenchange', syncFullscreen))
@@ -115,6 +203,14 @@ onBeforeUnmount(() => document.removeEventListener('fullscreenchange', syncFulls
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.role-tag {
+  font-size: 11px;
+  padding: 1px 7px;
+  color: var(--app-primary);
+  background: var(--app-primary-soft);
+  border-radius: 999px;
+  white-space: nowrap;
 }
 .caret {
   font-size: 11px;

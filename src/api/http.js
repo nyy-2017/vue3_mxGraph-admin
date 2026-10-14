@@ -29,6 +29,9 @@ service.interceptors.response.use(
         const userStore = useUserStore()
         userStore.logout()
         message.error('登录已失效，请重新登录')
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login'
+        }
       } else if (status === 403) {
         message.error('没有操作权限')
       } else if (status === 500) {

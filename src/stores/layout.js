@@ -1,22 +1,20 @@
 import { defineStore } from 'pinia'
 import { appRouter } from '../router'
 
-function flatMenus(routers) {
-  const list = []
-  routers.forEach((item) => {
-    if (item.meta && item.meta.hidden) return
-    const menu = { ...item }
-    if (item.children) {
-      menu.children = item.children.filter((c) => !(c.meta && c.meta.hidden))
-    }
-    list.push(menu)
-  })
-  return list
+// 仅保留 type=1 的菜单用于侧边栏（按钮级 type=2 仅用于接口鉴权）
+function filterMenuTree(menus) {
+  return (menus || [])
+    .filter((m) => m.type === 1)
+    .map((m) => ({
+      ...m,
+      children: m.children && m.children.length ? filterMenuTree(m.children) : undefined
+    }))
 }
 
 export const useLayoutStore = defineStore('layout', {
   state: () => ({
     ready: false,
+    // 侧边栏菜单：来自后端（按角色过滤），不再是前端静态路由
     menuList: [],
     openedTabs: [],
     currentPath: [],
@@ -28,10 +26,14 @@ export const useLayoutStore = defineStore('layout', {
     openedTabList: (state) => state.openedTabs
   },
   actions: {
-    initLayout() {
-      this.menuList = flatMenus(appRouter)
-      this.openedTabs = [appRouter[0]]
+    // 登录后 / 刷新还原时，用后端菜单树构建侧边栏
+    setMenus(menus) {
+      this.menuList = filterMenuTree(menus)
       this.ready = true
+      if (!this.openedTabs.length) {
+        const home = this.menuList.find((m) => m.name === 'home')
+        this.openedTabs = home ? [home] : this.menuList.length ? [this.menuList[0]] : []
+      }
     },
     setCurrentPath(name) {
       const path = []
@@ -50,14 +52,11 @@ export const useLayoutStore = defineStore('layout', {
     },
     openTab(name) {
       const existed = this.openedTabs.some((t) => t.name === name)
-      // 用原始 appRouter 查找（而非过滤后的 menuList），
-      // 这样 meta.hidden 的页面（如 graph详情页）也能打开 tab；
-      // hidden 只影响侧边栏菜单是否展示
+      // 用原始 appRouter 查找（含 meta.hidden 的页面，如 graph详情页），hidden 只影响侧边栏
       const tab = appRouter
         .flatMap((m) => (m.children ? m.children : [m]))
         .find((t) => t.name === name)
       if (!existed && tab) this.openedTabs.push(tab)
-      // 顶部栏标题跟随当前激活页签
       if (tab) this.currentTitle = tab.title || ''
     },
     removeTab(name) {
